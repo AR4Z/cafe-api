@@ -1,7 +1,7 @@
 from platypus.algorithms import NSGAIII
 from platypus import Problem, Real
-from recolector import Recolector
-from lote import Lote
+from .recolector import Recolector
+from .lote import Lote
 
 
 class GeneticAlgorithm():
@@ -11,11 +11,18 @@ class GeneticAlgorithm():
         self.lotes = list(map(lambda id_lote: Lote(
             kgs[id_lote], pendientes[id_lote]), range(len(pendientes))))
         self.problem = Problem(len(self.recolectores) *
-                               len(pendientes), len(pendientes))
+                               len(pendientes), len(self.lotes), len(rendimientos)*2)
         self.problem.types[:] = Real(0, 40)
         self.problem.function = self.schaffer
+        for rule in range(len(rendimientos)*2):
+            if rule % 2 ==0:
+                self.problem.constraints[rule] = ">=40"
+            else:
+                self.problem.constraints[rule] = "<=45"
+        
         self.solutions = []
-        self.algorithm = NSGAIII(self.problem, 12)
+        self.algorithm = NSGAIII(self.problem, 2, 1)
+        self.change_rendimientos_per_pendiente = [3.4, 0, -2.25]
 
     def run(self):
         self.algorithm.run(10000)
@@ -23,23 +30,81 @@ class GeneticAlgorithm():
     def get_solutions(self):
         return list(filter(lambda solution: solution.feasible, self.algorithm.result))
 
+    def get_solution_for_humans(self):
+        hours_per_recolector = []
+        solutions = self.get_solutions()
+        for solution in solutions:
+            print(solution)
+
+        best_solution = solutions[-1]
+        hours = []
+        num_lote = 1
+        for num_recolector in range(len(self.recolectores)):
+            for index_hours in range(num_recolector, len(best_solution.variables), len(self.recolectores)):
+                hours.append({
+                    'name': f'lote_{num_lote}',
+                    'hours': int(best_solution.variables[index_hours])
+                })
+                num_lote+=1
+            num_lote=1
+            hours_per_recolector.append({
+                'name': f'Recolector {num_recolector+1}',
+                'lotes': hours 
+            })
+            hours = []
+        
+        """for num_recolector in range(len(self.recolectores)):
+            for hours_in_lote in range(len(hours_per_recolector[num_recolector])):
+                self.lotes[hours_in_lote].recolectado += int(hours_per_recolector[num_recolector].get('lotes')[hours_in_lote].get('hours')) * (self.change_rendimientos_per_pendiente[self.lotes[hours_in_lote].get_pendiente()] + self.recolectores[num_recolector].get_rendimiento())
+        
+        recolectado = list(map(lambda lote: lote.recolectado, self.lotes)) """
+        return hours_per_recolector
+
     def schaffer(self, x):
         functions = []
+        rules = []
         num_lote = 0
-
+        num_recolector = 0
+        for rule in range(len(self.recolectores)):
+            hours = 0
+            for recolector in range(num_recolector, len(self.recolectores) * len(self.lotes), len(self.recolectores)):
+                hours += x[recolector]
+            num_recolector += 1
+            rules.append(hours)
+            rules.append(hours)
+        
         for lote in range(len(self.lotes)):
             recolectado = 0
             for recolector in range(num_lote, len(self.recolectores) + num_lote):
                 recolectado += x[recolector] * \
-                    self.recolectores[recolector - num_lote].get_rendimiento()
-
-            functions.append(
-                abs(self.lotes[num_lote // len(self.recolectores)].get_kg() - recolectado))
+                    (self.recolectores[recolector - num_lote].get_rendimiento() + (
+                        self.change_rendimientos_per_pendiente[self.lotes[num_lote // len(self.recolectores)].get_pendiente()]))
+            functions.append(recolectado)
             num_lote += len(self.recolectores)
 
-        return functions
+        return functions, rules
+
+        
 
 
-ga = GeneticAlgorithm([21.32, 25.04, 10.56], [1, 2, 1], [7000, 4000, 3000])
+"""ga = GeneticAlgorithm([21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56 ], [1, 2, 1], [7000, 4000, 3000])
 ga.run()
-print(ga.get_solutions())
+print(dict(ga.get_solutions()[0]))"""
+"""
+        for num_recolector in range(len(self.recolectores)):
+            for num_hours in range(len(hours_per_recolector[num_recolector])):
+                self.lotes[num_hours].recolectado += hours_per_recolector[num_recolector][num_hours] * (
+
+        recolectado = list(map(lambda lote: lote.recolectado, self.lotes))                    self.recolectores[num_hours].get_rendimiento() + self.change_rendimientos_per_pendiente[self.lotes[num_hours].get_pendiente()])
+"""
+
+"""hours_in_range = True
+        hours = 0
+        constraint_violation = 0 
+        for num_recolector in range(len(self.recolectores)):
+            for index_hours in range(num_recolector, len(x), len(self.recolectores)):
+                hours += x[index_hours]
+            constraint_violation += abs(45 - hours)
+            hours = 0
+        print("constraint_s",  constraint_violation)
+        return constraint_violation"""

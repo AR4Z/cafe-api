@@ -3,16 +3,20 @@ import subprocess
 from celery import Celery
 from falcon import status_codes as status
 from celery_singleton import Singleton
-from dynaconf import settings
-from .utils import RedisService
+from .redis_service import RedisService
+from .ga import GeneticAlgorithm
+import os
 
-app = Celery('cloner',
-                    broker=settings.get('CELERY_BROKER'),
-                    backend=settings.get('CELERY_BACKEND'))
+app = Celery('schedule',
+             broker=os.environ['REDIS_URL'],
+             backend=os.environ['REDIS_URL'])
 
 service = RedisService()
 
 
 @app.task(base=Singleton)
 def schedule(data):
-    
+    ga = GeneticAlgorithm(data.get('rendimientos'),
+                          data.get('pendientes'), data.get('kgs'))
+    ga.run()
+    return ga.get_solution_for_humans()

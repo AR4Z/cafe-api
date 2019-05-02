@@ -2,6 +2,7 @@ class Lote():
     def __init__(self, kg, pendiente):
         self.kg = kg
         self.pendiente = pendiente
+        self.recolectado = 0
 
 
     def get_kg(self):

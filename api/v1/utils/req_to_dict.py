@@ -18,4 +18,4 @@ def req_to_dict(req):
             'JSON was incorrect.'
         )
 
-return result_dict
+    return result_dict

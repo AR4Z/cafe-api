@@ -1,5 +1,6 @@
 import falcon
-from falcon_cors improt CORS
+from falcon_cors import CORS
+from resources import ScheduleCollectionResource
 
 class Cafe():
     def __init__(self):
@@ -13,6 +14,8 @@ class Cafe():
                 ],
             ).middleware
         ])
+        self.api.add_route('/v1/schedule', ScheduleCollectionResource())
+        self.api.add_route('/v1/schedule/{schedule_id}', ScheduleCollectionResource())
 
     def get_api(self):
         return self.api
