@@ -7,8 +7,8 @@ from .ga import GeneticAlgorithm
 import os
 
 app = Celery('schedule',
-             broker=os.environ['REDIS_URL'],
-             backend=os.environ['REDIS_URL'])
+             broker='redis://localhost:6379/0',
+             backend='redis://localhost:6379/0')
 
 
 @app.task(base=Singleton)
