@@ -16,4 +16,6 @@ def schedule(data):
     ga = GeneticAlgorithm(data.get('rendimientos'),
                           data.get('pendientes'), data.get('kgs'))
     ga.run()
-    return ga.get_solution_for_humans()
+    solution = ga.get_solution_for_humans()
+    return solution
+    

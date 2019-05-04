@@ -14,10 +14,19 @@ class ScheduleCollectionResource(object):
 
     def on_get(self, req, resp, schedule_id):
         scheduler_result = AsyncResult(schedule_id)
-        result = {
-            'status': scheduler_result.status,
-            'schedule': scheduler_result.result
-        }
+        if isinstance(scheduler_result.result, str):
+            result = {
+                'status': scheduler_result.status,
+                'message': scheduler_result.result
+            }
 
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(result)
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(result)
+        else:
+            result = {
+                'status': scheduler_result.status,
+                'schedule': scheduler_result.result
+            }
+
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(result) 

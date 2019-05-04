@@ -17,7 +17,7 @@ class GeneticAlgorithm():
                                len(pendientes), len(self.lotes), len(rendimientos)*2)
         self.problem.types[:] = Real(0, 40)
         self.problem.function = self.schaffer
-        for rule in range(len(rendimientos)*2):
+        for rule in range(len(rendimientos) * 2):
             if rule % 2 == 0:
                 self.problem.constraints[rule] = ">=40"
             else:
@@ -38,11 +38,10 @@ class GeneticAlgorithm():
         solutions = self.get_solutions()
         for solution in solutions:
             print(solution)
-
         try:
             best_solution = solutions[-1]
-        except IndexError as e:
-            return "No hemos encontrado una asignación óptima, revisa el número de recolectores y las características de los lotes."
+        except IndexError as _:
+            return 'No hemos encontrado una asignación óptima, revisa el número de recolectores y las características de los lotes.'
         
         hours = []
         num_lote = 1
