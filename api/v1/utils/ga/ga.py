@@ -39,7 +39,11 @@ class GeneticAlgorithm():
         for solution in solutions:
             print(solution)
 
-        best_solution = solutions[-1]
+        try:
+            best_solution = solutions[-1]
+        except IndexError as e:
+            return "No hemos encontrado una asignación óptima, revisa el número de recolectores y las características de los lotes."
+        
         hours = []
         num_lote = 1
         for num_recolector in range(len(self.recolectores)):
