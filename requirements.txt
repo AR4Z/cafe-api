@@ -5,3 +5,4 @@ falcon_cors==1.1.7
 Platypus_Opt==1.0.3
 celery==4.3.0
 platypus==1.0
+gunicorn==19.9.0
