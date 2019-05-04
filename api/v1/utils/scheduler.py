@@ -3,15 +3,12 @@ import subprocess
 from celery import Celery
 from falcon import status_codes as status
 from celery_singleton import Singleton
-from .redis_service import RedisService
 from .ga import GeneticAlgorithm
 import os
 
 app = Celery('schedule',
              broker=os.environ['REDIS_URL'],
              backend=os.environ['REDIS_URL'])
-
-service = RedisService()
 
 
 @app.task(base=Singleton)

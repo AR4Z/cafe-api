@@ -10,7 +10,7 @@ class GeneticAlgorithm():
     def __init__(self, rendimientos, pendientes, kgs):
         self.range_rendimientos = [[333, 1111], [1122, 2777], [2788, 4000]]
         self.recolectores = list(map(lambda id_recolector: Recolector(
-            float(decimal.Decimal(random.randrange(rendimientos[id_recolector])) / 100)), range(len(rendimientos))))
+            float(decimal.Decimal(random.randrange(self.range_rendimientos[rendimientos[id_recolector]][0], self.range_rendimientos[rendimientos[id_recolector]][1])) / 100)), range(len(rendimientos))))
         self.lotes = list(map(lambda id_lote: Lote(
             kgs[id_lote], pendientes[id_lote]), range(len(pendientes))))
         self.problem = Problem(len(self.recolectores) *
@@ -56,11 +56,6 @@ class GeneticAlgorithm():
             })
             hours = []
 
-        """for num_recolector in range(len(self.recolectores)):
-            for hours_in_lote in range(len(hours_per_recolector[num_recolector])):
-                self.lotes[hours_in_lote].recolectado += int(hours_per_recolector[num_recolector].get('lotes')[hours_in_lote].get('hours')) * (self.change_rendimientos_per_pendiente[self.lotes[hours_in_lote].get_pendiente()] + self.recolectores[num_recolector].get_rendimiento())
-        
-        recolectado = list(map(lambda lote: lote.recolectado, self.lotes)) """
         return hours_per_recolector
 
     def schaffer(self, x):
@@ -87,25 +82,3 @@ class GeneticAlgorithm():
 
         return functions, rules
 
-
-"""ga = GeneticAlgorithm([21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56, 21.32, 25.04, 10.56 ], [1, 2, 1], [7000, 4000, 3000])
-ga.run()
-print(dict(ga.get_solutions()[0]))"""
-"""
-        for num_recolector in range(len(self.recolectores)):
-            for num_hours in range(len(hours_per_recolector[num_recolector])):
-                self.lotes[num_hours].recolectado += hours_per_recolector[num_recolector][num_hours] * (
-
-        recolectado = list(map(lambda lote: lote.recolectado, self.lotes))                    self.recolectores[num_hours].get_rendimiento() + self.change_rendimientos_per_pendiente[self.lotes[num_hours].get_pendiente()])
-"""
-
-"""hours_in_range = True
-        hours = 0
-        constraint_violation = 0 
-        for num_recolector in range(len(self.recolectores)):
-            for index_hours in range(num_recolector, len(x), len(self.recolectores)):
-                hours += x[index_hours]
-            constraint_violation += abs(45 - hours)
-            hours = 0
-        print("constraint_s",  constraint_violation)
-        return constraint_violation"""
