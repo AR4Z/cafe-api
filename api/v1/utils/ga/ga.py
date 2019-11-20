@@ -100,7 +100,8 @@ class GeneticAlgorithm():
             for index_hours in range(num_recolector, len(best_solution.variables), len(self.recolectores)):
                 hours.append({
                     'name': f'lote_{num_lote}',
-                    'hours': int(best_solution.variables[index_hours])
+                    'hours': int(best_solution.variables[index_hours]),
+                    'cafe': int(best_solution.variables[index_hours]) * self.recolectores[num_recolector].get_rendimiento()
                 })
                 num_lote += 1
             num_lote = 1
@@ -136,7 +137,7 @@ class GeneticAlgorithm():
         rules = []
         num_lote = 0
         num_recolector = 0
-        for rule in range(len(self.recolectores)):
+        for _ in range(len(self.recolectores)):
             hours = 0
             for recolector in range(num_recolector, len(self.recolectores) * len(self.lotes), len(self.recolectores)):
                 hours += x[recolector]
@@ -144,7 +145,7 @@ class GeneticAlgorithm():
             rules.append(hours)
             rules.append(hours)
 
-        for lote in range(len(self.lotes)):
+        for _ in range(len(self.lotes)):
             recolectado = 0
             for recolector in range(num_lote, len(self.recolectores) + num_lote):
                 recolectado += x[recolector] * \
