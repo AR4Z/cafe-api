@@ -100,7 +100,7 @@ class GeneticAlgorithm():
             for index_hours in range(num_recolector, len(best_solution.variables), len(self.recolectores)):
                 hours.append({
                     'name': f'lote_{num_lote}',
-                    'hours': int(best_solution.variables[index_hours]),
+                    'hours': round(best_solution.variables[index_hours], 2),
                     'cafe': int(best_solution.variables[index_hours]) * self.recolectores[num_recolector].get_rendimiento()
                 })
                 num_lote += 1
